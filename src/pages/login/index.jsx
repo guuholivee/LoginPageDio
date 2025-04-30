@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
-
 
 import {
   Column,
@@ -17,11 +20,27 @@ import {
   Wrapper
 } from "./styles";
 
+
+const schema = yup.object({
+  email: yup.string().email('Email não é válido').required('Campo obrigatório'),
+  password: yup.string().min(3, 'No mínimo 3 caracteres').required('Campo obrigatório'),
+}).required();
+
 const Login = () => {
   const navigate = useNavigate();
-  const handleClickSignIn = () => {
+
+
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
+  
+  const onSubmit = (data) => {
+    console.log(data);
     navigate("/feed");
-  }
+  };
+
   return (
     <>
       <Header />
@@ -36,10 +55,26 @@ const Login = () => {
           <Wrapper>
             <TitleLogin>Faça seu cadastro</TitleLogin>
             <SubTitleLogin>Faça seu login</SubTitleLogin>
-            <form>
-              <Input placeholder="E-mail" />
-              <Input placeholder="Senha" type="password" />
-              <Button title="Entrar" variant="secondary" onClick={handleClickSignIn}  type="buttom"/>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              
+              {/* Campo de email */}
+              <Input
+                name="email"
+                control={control}
+                placeholder="E-mail"
+                errorMessage={errors.email?.message} 
+              />
+             
+              {/* Campo de senha */}
+              <Input
+                name="password"
+                control={control}
+                placeholder="Senha"
+                type="password"
+                errorMessage={errors.password?.message} 
+              />
+
+              <Button title="Entrar" variant="secondary" type="submit" />
             </form>
             <Row>
               <EsqueciText>Esqueci minha senha</EsqueciText>

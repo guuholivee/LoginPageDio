@@ -31,4 +31,10 @@ export const InputText = styled.input`
     &:focus {
         outline: none;
     }
-`;
+`
+export const ErrorText = styled.p`
+    color: #ff0000;
+     font-family: 'Open Sans';
+    font-size: 14px;
+    margin: 5px 0 ;   
+`
