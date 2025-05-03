@@ -53,7 +53,6 @@ const Login = () => {
       alert('Erro ao fazer login, tente novamente mais tarde!');
     }
   };
-  
 
   return (
     <>
@@ -90,7 +89,8 @@ const Login = () => {
             </form>
             <Row>
               <EsqueciText>Esqueci minha senha</EsqueciText>
-              <CriarText>Criar conta</CriarText>
+              {/* Corrigido para navegar para a rota /register */}
+              <CriarText onClick={() => navigate('/register')}>Criar conta</CriarText>
             </Row>
           </Wrapper>
         </Column>

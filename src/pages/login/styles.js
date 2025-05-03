@@ -75,12 +75,24 @@ export const EsqueciText = styled.p`
   color: #e5e844;
 `;
 
-export const CriarText = styled.p`
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
+export const CriarText = styled.button`
+  background-color: #e4105d;
+  color: #ffffff;
+  border: none;
+  border-radius: 22px;
+  padding: 8px 16px;
   font-size: 14px;
-  line-height: 19px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
-  color: #e23dd7;
+  &:hover {
+    background-color: #c30f42;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
+
