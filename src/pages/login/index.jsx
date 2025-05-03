@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { api } from '../../services/api';
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
@@ -20,26 +21,39 @@ import {
   Wrapper
 } from "./styles";
 
-
+// Validação do formulário com Yup
 const schema = yup.object({
   email: yup.string().email('Email não é válido').required('Campo obrigatório'),
-  password: yup.string().min(3, 'No mínimo 3 caracteres').required('Campo obrigatório'),
+  senha: yup.string().min(3, 'No mínimo 3 caracteres').required('Campo obrigatório'),
 }).required();
 
 const Login = () => {
   const navigate = useNavigate();
 
-
+  // Configuração do React Hook Form
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
+  // Função chamada ao submeter o formulário
+  const onSubmit = async (formData) => {
+    try {
+      // Faz a requisição para a API
+      const { data } = await api.get(`users?email=${formData.email}&senha=${formData.senha}`);
   
-  const onSubmit = (data) => {
-    console.log(data);
-    navigate("/feed");
+      // Verifica se o email e a senha correspondem a um usuário válido
+      if (data.length === 1 && data[0].email === formData.email && data[0].senha === formData.senha) {
+        navigate('/feed'); // Redireciona para o feed
+      } else {
+        alert('Email ou senha inválidos!');
+      }
+    } catch (error) {
+      console.error('Erro na API:', error);
+      alert('Erro ao fazer login, tente novamente mais tarde!');
+    }
   };
+  
 
   return (
     <>
@@ -56,24 +70,22 @@ const Login = () => {
             <TitleLogin>Faça seu cadastro</TitleLogin>
             <SubTitleLogin>Faça seu login</SubTitleLogin>
             <form onSubmit={handleSubmit(onSubmit)}>
-              
+
               {/* Campo de email */}
               <Input
                 name="email"
                 control={control}
                 placeholder="E-mail"
-                errorMessage={errors.email?.message} 
+                errorMessage={errors.email?.message} // Exibe mensagem de erro, se houver
               />
-             
               {/* Campo de senha */}
               <Input
-                name="password"
+                name="senha"
                 control={control}
                 placeholder="Senha"
-                type="password"
-                errorMessage={errors.password?.message} 
+                type="senha"
+                errorMessage={errors.password?.message} // Exibe mensagem de erro, se houver
               />
-
               <Button title="Entrar" variant="secondary" type="submit" />
             </form>
             <Row>

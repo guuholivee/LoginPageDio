@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nome": "Gustavo Batista",
+      "email": "guoliveira1704@gmail.com",
+      "senha": "17041997"
+    },
+    {
+      "id": 2,
+      "nome": "Luana Rosa Lima",
+      "email": "luanarosalima@gmail.com",
+      "senha": "123456789"
+    } 
+  ]
+}
