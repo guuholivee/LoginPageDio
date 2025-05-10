@@ -3,11 +3,15 @@ import React from 'react';
 import { Header } from "../../components/Header";
 import { Card } from "../../components/Card";
 import { UserInfo } from "../../components/UserInfo";
-import { Container, Column, Title, TitleHighLight  } from './styles';
+import { Container, Column, Title, TitleHighLight, } from './styles';
+
+
 
 const Feed = () => {
-  return ( <>
-      <Header  autenticado={true} />
+
+  return ( 
+  <>
+      <Header   />
       <Container>
         <Column flex={3}>
           <Title>Feed de notícias</Title>
@@ -32,4 +36,7 @@ const Feed = () => {
 };
 
 export { Feed };
+
+
+
 

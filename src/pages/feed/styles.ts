@@ -36,7 +36,12 @@ export const TextContent = styled.p`
     color: #ffffff70;
 `;
 
-export const Column = styled.div`
-   flex:${({ flex }) => flex};
-   padding-rigth:  24px;
-`
+interface ColumnProps {
+    flex: number;
+  }
+  
+  export const Column = styled.div<ColumnProps>`
+    display: flex;
+    flex: ${({ flex }) => flex};
+    flex-direction: column;
+  `;

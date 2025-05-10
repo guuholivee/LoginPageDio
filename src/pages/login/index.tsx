@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { api } from '../../services/api';
+
+import { AuthContext } from '../../context/auth'; 
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
@@ -21,42 +22,32 @@ import {
   Wrapper
 } from "./styles";
 
-// Validação do formulário com Yup
 const schema = yup.object({
   email: yup.string().email('Email não é válido').required('Campo obrigatório'),
-  senha: yup.string().min(3, 'No mínimo 3 caracteres').required('Campo obrigatório'),
+  password: yup.string().min(3, 'No mínimo 3 caracteres').required('Campo obrigatório'),
 }).required();
 
-const Login = () => {
-  const navigate = useNavigate();
+interface IFormData {
+  email: string;
+  password: string;
+}
 
-  // Configuração do React Hook Form
-  const { control, handleSubmit, formState: { errors } } = useForm({
+const Login = () => {
+  const { handleLogin } = useContext(AuthContext);
+  const navigate = useNavigate(); 
+
+  const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
-  // Função chamada ao submeter o formulário
-  const onSubmit = async (formData) => {
-    try {
-      // Faz a requisição para a API
-      const { data } = await api.get(`users?email=${formData.email}&senha=${formData.senha}`);
-  
-      // Verifica se o email e a senha correspondem a um usuário válido
-      if (data.length === 1 && data[0].email === formData.email && data[0].senha === formData.senha) {
-        navigate('/feed'); // Redireciona para o feed
-      } else {
-        alert('Email ou senha inválidos!');
-      }
-    } catch (error) {
-      console.error('Erro na API:', error);
-      alert('Erro ao fazer login, tente novamente mais tarde!');
-    }
+  const onSubmit = async (formData: IFormData) => {
+    handleLogin(formData);
   };
 
   return (
     <>
-      <Header />
+      <Header  />
       <Container>
         <Column>
           <Title>
@@ -69,27 +60,23 @@ const Login = () => {
             <TitleLogin>Faça seu cadastro</TitleLogin>
             <SubTitleLogin>Faça seu login</SubTitleLogin>
             <form onSubmit={handleSubmit(onSubmit)}>
-
-              {/* Campo de email */}
               <Input
                 name="email"
                 control={control}
                 placeholder="E-mail"
-                errorMessage={errors.email?.message} // Exibe mensagem de erro, se houver
+                errorMessage={errors.email?.message}
               />
-              {/* Campo de senha */}
               <Input
-                name="senha"
+                name="password"
                 control={control}
                 placeholder="Senha"
-                type="senha"
-                errorMessage={errors.password?.message} // Exibe mensagem de erro, se houver
+                type="password" 
+                errorMessage={errors.password?.message}
               />
-              <Button title="Entrar" variant="secondary" type="submit" />
+              <Button title="Entrar" $variant="secondary" type="submit" />
             </form>
             <Row>
               <EsqueciText>Esqueci minha senha</EsqueciText>
-              {/* Corrigido para navegar para a rota /register */}
               <CriarText onClick={() => navigate('/register')}>Criar conta</CriarText>
             </Row>
           </Wrapper>

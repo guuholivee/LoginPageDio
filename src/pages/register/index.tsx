@@ -20,6 +20,13 @@ import {
   Wrapper
 } from "./styles";
 
+// Definição do tipo para os dados do formulário
+type FormData = {
+  nome: string;
+  email: string;
+  senha: string;
+};
+
 // Schema de validação com Yup
 const schema = yup.object({
   nome: yup.string().required('Nome é obrigatório'),
@@ -30,26 +37,33 @@ const schema = yup.object({
 const Register = () => {
   const navigate = useNavigate();
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const { control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: FormData) => {
     try {
+      // Envio dos dados para a API
       await axios.post('http://localhost:8000/users', formData);
       alert('Cadastro realizado com sucesso!');
       reset();
       navigate('/login'); // Redireciona para login após cadastro
     } catch (error) {
       console.error('Erro ao cadastrar:', error);
-      alert('Erro ao cadastrar. Tente novamente!');
+
+      // Tratamento de erro específico (exemplo: e-mail já cadastrado)
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        alert('E-mail já cadastrado!');
+      } else {
+        alert('Erro ao cadastrar. Tente novamente!');
+      }
     }
   };
 
   return (
     <>
-      <Header />
+      <Header  />
       <Container>
         <Column>
           <Title>
@@ -80,7 +94,10 @@ const Register = () => {
                 type="password"
                 errorMessage={errors.senha?.message}
               />
-              <Button title="Cadastrar" variant="secondary" type="submit" />
+              <Button
+                title={isSubmitting ? "Cadastrando..." : "Cadastrar"}
+                $variant="secondary"
+              />
             </form>
             <Row>
               <EsqueciText onClick={() => navigate('/')}>Já tenho conta</EsqueciText>
