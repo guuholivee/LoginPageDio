@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React  from 'react';
 import { useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { AuthContext } from '../../context/auth'; 
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
@@ -21,6 +20,7 @@ import {
   TitleLogin,
   Wrapper
 } from "./styles";
+import { useAuth } from '../../hooks/useAuth';
 
 const schema = yup.object({
   email: yup.string().email('Email não é válido').required('Campo obrigatório'),
@@ -33,7 +33,7 @@ interface IFormData {
 }
 
 const Login = () => {
-  const { handleLogin } = useContext(AuthContext);
+  const { handleLogin } = useAuth();
   const navigate = useNavigate(); 
 
   const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({
